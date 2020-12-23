@@ -10,6 +10,8 @@
 #include <future>
 #include <memory>
 #include <mutex>
+#include <thread>
+#include <chrono>
 
 #include <boost/program_options/variables_map.hpp>
 
@@ -28,6 +30,8 @@
 
 #include <System/Dispatcher.h>
 #include <System/Ipv4Address.h>
+
+#include <cli_tools/indicators.hpp>
 
 std::string remote_fee_address;
 namespace CryptoNote
@@ -135,7 +139,7 @@ namespace CryptoNote
       {
       }
 
-      void update(uint64_t height, bool force = false)
+      bool update(uint64_t height, bool force = false)
       {
         auto current_time = std::chrono::system_clock::now();
         if (std::chrono::seconds(m_simple_wallet.currency().difficultyTarget() / 2) < current_time - m_blockchain_height_update_time ||
@@ -148,6 +152,35 @@ namespace CryptoNote
           std::cout << "Height " << height << " of " << m_blockchain_height << '\r';
           m_print_time = current_time;
         }
+        using namespace indicators;
+
+        // Hide cursor
+        show_console_cursor(false);
+
+        BlockProgressBar bar{
+          option::BarWidth{80},
+          option::Start{"["},
+          option::End{"]"},
+          option::ForegroundColor{Color::white}  ,
+          option::FontStyles{std::vector<FontStyle>{FontStyle::bold}}
+        };
+        
+        // Update bar state
+        auto progress = 100.0f * height / m_blockchain_height;
+        while (true) {
+          if (height < m_blockchain_height && progress > 99.9f) {
+            return 99.9f; // to avoid 100% when not fully synced
+          }
+          bar.set_progress(progress);
+          progress += 0.01f;
+          if (bar.is_completed())
+            break;
+          std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        }
+
+        // Show cursor
+        show_console_cursor(true);
+        return true;
       }
 
     private:

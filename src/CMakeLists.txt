@@ -1,5 +1,6 @@
 add_definitions(-DSTATICLIB)
 include_directories(${CMAKE_SOURCE_DIR}/external/parallel_hashmap)
+include_directories(${CMAKE_SOURCE_DIR}/external/cli_tools)
 
 file(GLOB_RECURSE BlockchainExplorer BlockchainExplorer/*)
 file(GLOB_RECURSE CacheWallet CacheWallet/*)
