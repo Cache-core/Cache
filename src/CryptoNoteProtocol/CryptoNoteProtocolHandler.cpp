@@ -9,6 +9,7 @@
 #include <future>
 #include <boost/scope_exit.hpp>
 #include <boost/uuid/uuid_io.hpp>
+
 #include <System/Dispatcher.h>
 
 #include "CryptoNoteCore/CryptoNoteBasicImpl.h"
@@ -46,6 +47,7 @@ CryptoNoteProtocolHandler::CryptoNoteProtocolHandler(const Currency &currency, S
                                                                                                                                                                                   m_p2p(p_net_layout),
                                                                                                                                                                                   m_synchronized(false),
                                                                                                                                                                                   m_stop(false),
+                                                                                                                                                                                  m_blockchainHeight(0),
                                                                                                                                                                                   m_observedHeight(0),
                                                                                                                                                                                   m_peersCount(0),
                                                                                                                                                                                   logger(log, "protocol")
@@ -793,8 +795,12 @@ void CryptoNoteProtocolHandler::updateObservedHeight(uint32_t peerHeight, const 
     std::lock_guard<std::mutex> lock(m_observedHeightMutex);
 
     uint32_t height = m_observedHeight;
-    if (peerHeight > context.m_remote_blockchain_height)
-    {
+    if (context.m_remote_blockchain_height != 0 && context.m_last_response_height <= context.m_remote_blockchain_height - 1) {
+      m_observedHeight = context.m_remote_blockchain_height - 1;
+      if (m_observedHeight != height) {
+        updated = true;
+      }
+    } else if (peerHeight > context.m_remote_blockchain_height) {
       m_observedHeight = std::max(m_observedHeight, peerHeight);
       if (m_observedHeight != height)
       {
@@ -809,6 +815,14 @@ void CryptoNoteProtocolHandler::updateObservedHeight(uint32_t peerHeight, const 
       {
         updated = true;
       }
+    }
+  }
+
+  {
+    std::lock_guard<std::mutex> lock(m_blockchainHeightMutex);
+    if (peerHeight > m_blockchainHeight) {
+      m_blockchainHeight = peerHeight;
+      logger(Logging::INFO, Logging::BRIGHT_GREEN) << "New Top Block Detected: " << peerHeight; 
     }
   }
 
@@ -839,6 +853,11 @@ void CryptoNoteProtocolHandler::recalculateMaxObservedHeight(const CryptoNoteCon
     m_observedHeight = localHeight;
   }
 }
+
+uint32_t CryptoNoteProtocolHandler::getBlockchainHeight() const {
+  std::lock_guard<std::mutex> lock(m_blockchainHeightMutex);
+  return m_blockchainHeight;  
+};
 
 uint32_t CryptoNoteProtocolHandler::getObservedHeight() const
 {

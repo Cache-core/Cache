@@ -703,6 +703,7 @@ bool RpcServer::on_get_peer_list(const COMMAND_RPC_GET_PEER_LIST::request& req, 
 
 bool RpcServer::on_get_info(const COMMAND_RPC_GET_INFO::request& req, COMMAND_RPC_GET_INFO::response& res) {
   res.height = m_core.get_current_blockchain_height();
+  res.network_height = std::max(static_cast<uint32_t>(1), m_protocolQuery.getBlockchainHeight());
   res.difficulty = m_core.getNextBlockDifficulty();
   res.tx_count = m_core.get_blockchain_total_transactions() - res.height; //without coinbase
   res.tx_pool_size = m_core.get_pool_transactions_count();

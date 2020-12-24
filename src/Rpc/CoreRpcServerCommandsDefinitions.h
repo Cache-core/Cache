@@ -264,6 +264,7 @@ struct COMMAND_RPC_GET_INFO {
     std::string fee_address;
     std::string top_block_hash;
     uint64_t height;
+    uint32_t network_height;
     uint64_t difficulty;
     uint64_t tx_count;
     uint64_t tx_pool_size;
@@ -285,6 +286,7 @@ struct COMMAND_RPC_GET_INFO {
     void serialize(ISerializer &s) {
       KV_MEMBER(status)
       KV_MEMBER(height)
+      KV_MEMBER(network_height)
       KV_MEMBER(version)
       KV_MEMBER(node_info)
       KV_MEMBER(difficulty)
