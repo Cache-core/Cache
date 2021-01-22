@@ -18,6 +18,7 @@
 #include "IWalletLegacy.h"
 #include "Common/PasswordContainer.h"
 #include "TransferCommand.h"
+#include "WalletLogger.h"
 
 #include "Common/ConsoleHandler.h"
 #include "CryptoNoteCore/CryptoNoteBasicImpl.h"
@@ -139,7 +140,7 @@ namespace CryptoNote
       {
       }
 
-      bool update(uint64_t height, bool force = false)
+      void update(uint64_t height, bool force = false)
       {
         auto current_time = std::chrono::system_clock::now();
         if (std::chrono::seconds(m_simple_wallet.currency().difficultyTarget() / 2) < current_time - m_blockchain_height_update_time ||
@@ -216,6 +217,7 @@ namespace CryptoNote
     System::Dispatcher& m_dispatcher;
     Logging::LoggerRef logger;
     Tools::PasswordContainer m_pwd_container;
+    WalletLogger m_wallet_log;
 
     std::unique_ptr<CryptoNote::NodeRpcProxy> m_node;
     std::unique_ptr<CryptoNote::IWalletLegacy> m_wallet;
