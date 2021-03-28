@@ -41,7 +41,7 @@ ITransfersSubscription& TransfersSyncronizer::addSubscription(const AccountSubsc
 
   if (it == m_consumers.end()) {
     std::unique_ptr<TransfersConsumer> consumer(
-      new TransfersConsumer(m_currency, m_node, m_logger.getLogger(), acc.keys.viewSecretKey));
+      new TransfersConsumer(m_currency, m_node, acc.keys.viewSecretKey));
 
     m_sync.addConsumer(consumer.get());
     consumer->addObserver(this);

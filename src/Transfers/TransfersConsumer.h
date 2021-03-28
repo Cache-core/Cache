@@ -12,7 +12,6 @@
 #include "TypeHelpers.h"
 
 #include "crypto/crypto.h"
-#include "Logging/LoggerRef.h"
 
 #include "IObservableImpl.h"
 
@@ -25,7 +24,7 @@ class INode;
 class TransfersConsumer: public IObservableImpl<IBlockchainConsumerObserver, IBlockchainConsumer> {
 public:
 
-  TransfersConsumer(const CryptoNote::Currency& currency, INode& node, Logging::ILogger& logger, const Crypto::SecretKey& viewSecret);
+  TransfersConsumer(const CryptoNote::Currency& currency, INode& node, const Crypto::SecretKey& viewSecret);
 
   ITransfersSubscription& addSubscription(const AccountSubscription& subscription);
   // returns true if no subscribers left
@@ -79,7 +78,6 @@ private:
 
   INode& m_node;
   const CryptoNote::Currency& m_currency;
-  Logging::LoggerRef m_logger;
 };
 
 }

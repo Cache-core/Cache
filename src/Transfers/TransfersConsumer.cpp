@@ -107,8 +107,8 @@ std::vector<Crypto::Hash> getBlockHashes(const CryptoNote::CompleteBlock* blocks
 
 namespace CryptoNote {
 
-TransfersConsumer::TransfersConsumer(const CryptoNote::Currency& currency, INode& node, Logging::ILogger& logger, const SecretKey& viewSecret) :
-  m_node(node), m_viewSecret(viewSecret), m_currency(currency), m_logger(logger, "TransfersConsumer") {
+TransfersConsumer::TransfersConsumer(const CryptoNote::Currency& currency, INode& node, const SecretKey& viewSecret) :
+  m_node(node), m_viewSecret(viewSecret), m_currency(currency) {
   updateSyncStart();
 }
 
@@ -120,7 +120,7 @@ ITransfersSubscription& TransfersConsumer::addSubscription(const AccountSubscrip
   auto& res = m_subscriptions[subscription.keys.address.spendPublicKey];
 
   if (res.get() == nullptr) {
-    res.reset(new TransfersSubscription(m_currency, m_logger.getLogger(), subscription));
+    res.reset(new TransfersSubscription(m_currency, subscription));
     m_spendKeys.insert(subscription.keys.address.spendPublicKey);
     updateSyncStart();
   }
@@ -474,7 +474,7 @@ std::error_code TransfersConsumer::preprocessOutputs(const TransactionBlockInfo&
     findMyOutputs(tx, m_viewSecret, m_spendKeys, outputs);
   }
   catch (const std::exception& e) {
-    m_logger(ERROR, BRIGHT_RED) << "Failed to process transaction: " << e.what() << ", transaction hash " << Common::podToHex(tx.getTransactionHash());
+    //m_logger(ERROR, BRIGHT_RED) << "Failed to process transaction: " << e.what() << ", transaction hash " << Common::podToHex(tx.getTransactionHash());
     return std::error_code();
   }
 	
@@ -495,16 +495,17 @@ std::error_code TransfersConsumer::preprocessOutputs(const TransactionBlockInfo&
     auto it = m_subscriptions.find(kv.first);
     if (it != m_subscriptions.end()) {
       auto& transfers = info.outputs[kv.first];
-       try {
-		  errorCode = createTransfers(it->second->getKeys(), blockInfo, tx, kv.second, info.globalIdxs, transfers);
-		  if (errorCode) {
-			  return errorCode;
-		  }
-	  }
-	  catch (const std::exception& e) {
-	    m_logger(ERROR, BRIGHT_RED) << "Failed to process transaction: " << e.what() << ", transaction hash " << Common::podToHex(tx.getTransactionHash());
-		  return std::error_code();
-	  }
+      try {
+        errorCode = createTransfers(it->second->getKeys(), blockInfo, tx, kv.second, info.globalIdxs, transfers);
+        if (errorCode) {
+          return errorCode;
+        }
+      }
+      catch (const std::exception& e)
+      {
+        //m_logger(ERROR, BRIGHT_RED) << "Failed to process transaction: " << e.what() << ", transaction hash " << Common::podToHex(tx.getTransactionHash());
+        return std::error_code();
+      }
     }
   }
 
@@ -526,7 +527,7 @@ void TransfersConsumer::processTransaction(const TransactionBlockInfo& blockInfo
   std::vector<TransactionOutputInformationIn> emptyOutputs;
   std::vector<ITransfersContainer*> transactionContainers;
   
-  m_logger(TRACE) << "Process transaction, block " << blockInfo.height << ", transaction index " << blockInfo.transactionIndex << ", hash " << tx.getTransactionHash();
+  //m_logger(TRACE) << "Process transaction, block " << blockInfo.height << ", transaction index " << blockInfo.transactionIndex << ", hash " << tx.getTransactionHash();
 
   bool someContainerUpdated = false;
 
@@ -546,10 +547,10 @@ void TransfersConsumer::processTransaction(const TransactionBlockInfo& blockInfo
   }
 
   if (someContainerUpdated) {
-    m_logger(TRACE) << "Transaction updated some containers, hash " << tx.getTransactionHash();
+    //m_logger(TRACE) << "Transaction updated some containers, hash " << tx.getTransactionHash();
     m_observerManager.notify(&IBlockchainConsumerObserver::onTransactionUpdated, this, tx.getTransactionHash(), transactionContainers);
-  } else {
-    m_logger(TRACE) << "Transaction doesn't updated any container, hash " << tx.getTransactionHash();
+  //} else {
+  //  m_logger(TRACE) << "Transaction doesn't updated any container, hash " << tx.getTransactionHash();
   }
 }
 

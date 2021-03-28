@@ -6,17 +6,13 @@
 
 #pragma once
 
-#include <string>
-
 #include "INode.h"
-
-#include "Logging/LoggerRef.h"
 
 namespace PaymentService {
 
 class NodeFactory {
 public:
-  static CryptoNote::INode* createNode(const std::string& daemonAddress, uint16_t daemonPort, Logging::ILogger& logger);
+  static CryptoNote::INode* createNode(const std::string& daemonAddress, uint16_t daemonPort);
   static CryptoNote::INode* createNodeStub();
 private:
   NodeFactory();

@@ -210,8 +210,7 @@ void PaymentGateService::runRpcProxy(Logging::LoggerRef& log) {
   std::unique_ptr<CryptoNote::INode> node(
     PaymentService::NodeFactory::createNode(
       config.remoteNodeConfig.daemonHost,
-      config.remoteNodeConfig.daemonPort,
-      log.getLogger()));
+      config.remoteNodeConfig.daemonPort));
 
   runWalletService(currency, *node);
 }

@@ -17,23 +17,33 @@
 
 namespace CryptoNote {
   namespace parameters {
-    const Height   MAX_BLOCK_NUMBER = 500000000;
+    const uint64_t MAX_BLOCK_NUMBER = 500000000;
     const size_t   MAX_BLOCK_BLOB_SIZE = 500000000;
     const size_t   MAX_TX_SIZE = 1000000000;
 
     /* cxche address prefix - 43810262 */
-    const Prefix   PUBLIC_ADDRESS_BASE58_PREFIX = 0x29c7dd6;
+    const uint64_t PUBLIC_ADDRESS_BASE58_PREFIX = 0x29c7dd6;
 
     /* 20 minutes */
-    const Height   MINED_COINS_UNLOCK_WINDOW = 10;
+    const size_t   MINED_COINS_UNLOCK_WINDOW = 10;
 
-    const uint16_t DECIMAL_POINT = 5;
-    const Amount   COIN = UINT64_C(100000);
-    const Amount   MONEY_SUPPLY = UINT64_C(30000000000000);
+    const size_t   DECIMAL_POINT = 5;
+    const uint64_t COIN = UINT64_C(100000);
+    const uint64_t MONEY_SUPPLY = UINT64_C(30000000000000);
 
-    const Amount   MINIMUM_FEE = UINT64_C(100);
-    const Amount   MINIMUM_FEE_BANKING = UINT64_C(100);
-    const Amount   DEFAULT_DUST_THRESHOLD = UINT64_C(10);
+    const uint64_t MINIMUM_FEE = UINT64_C(100);
+    const uint64_t MINIMUM_FEE_BANKING = UINT64_C(100);
+    const uint64_t DEFAULT_DUST_THRESHOLD = UINT64_C(10);
+
+	         /* Fee adjustment V1 */
+    const uint64_t MINIMUM_FEE_V1                                = UINT64_C(10);
+
+    const uint64_t MINIMUM_FEE_V1_HEIGHT                         = 1337;
+
+	          /* Fee adjustment V2 */
+    const uint64_t MINIMUM_FEE_V2                                = UINT64_C(1);
+
+    const uint64_t MINIMUM_FEE_V2_HEIGHT                         = 1337;
 
     const Mixin    MINIMUM_MIXIN = 0;
     const Mixin    DEFAULT_MIXIN = 5;
@@ -41,7 +51,7 @@ namespace CryptoNote {
     const uint64_t MULTIPLIER_FACTOR = 100;
     const Height   END_MULTIPLIER_BLOCK = 12750;
 
-    const BlockOrTimestamp DIFFICULTY_TARGET = 120; 
+    const BlockOrTimestamp DIFFICULTY_TARGET = 120;
     const size_t   DIFFICULTY_WINDOW = 120;
 
     /* Works with LWMA3 */
@@ -62,7 +72,7 @@ namespace CryptoNote {
     const Height   UPGRADE_HEIGHT = 1;
     const Height   UPGRADE_HEIGHT_V2 = 2;
 
-    const unsigned UPGRADE_VOTING_THRESHOLD = 90; 
+    const unsigned UPGRADE_VOTING_THRESHOLD = 90;
     const size_t   UPGRADE_VOTING_WINDOW = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;
     const size_t   UPGRADE_WINDOW = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;
 
@@ -91,7 +101,7 @@ namespace CryptoNote {
 
     static_assert(DEPOSIT_MIN_TERM > 0, "Bad DEPOSIT_MIN_TERM");
     static_assert(DEPOSIT_MIN_TERM <= DEPOSIT_MAX_TERM, "Bad DEPOSIT_MAX_TERM");
-    static_assert(DEPOSIT_MIN_TERM * DEPOSIT_MAX_TOTAL_RATE > DEPOSIT_MIN_TOTAL_RATE_FACTOR, "Bad DEPOSIT_MIN_TOTAL_RATE_FACTOR or DEPOSIT_MAX_TOTAL_RATE");
+    static_assert(DEPOSIT_MIN_TERM* DEPOSIT_MAX_TOTAL_RATE > DEPOSIT_MIN_TOTAL_RATE_FACTOR, "Bad DEPOSIT_MIN_TOTAL_RATE_FACTOR or DEPOSIT_MAX_TOTAL_RATE");
     static_assert(0 < UPGRADE_VOTING_THRESHOLD && UPGRADE_VOTING_THRESHOLD <= 100, "Bad UPGRADE_VOTING_THRESHOLD");
     static_assert(UPGRADE_VOTING_WINDOW > 1, "Bad UPGRADE_VOTING_WINDOW");
   } // namespace parameters
@@ -145,8 +155,8 @@ namespace CryptoNote {
   const uint32_t  P2P_IP_FAILS_BEFORE_BLOCK = 10;
   const size_t    P2P_LOCAL_GRAY_PEERLIST_LIMIT = 5000;
   const size_t    P2P_LOCAL_WHITE_PEERLIST_LIMIT = 1000;
-  const char      P2P_STAT_TRUSTED_PUB_KEY[] = "5a1795d5c9c1c9d3fe1aa2cda90484787a10296e49cad387e9a9208ae78216ae";
-  const uint8_t   P2P_UPGRADE_WINDOW = 2;
+  const char      P2P_STAT_TRUSTED_PUB_KEY[] = "540D4327ABA4604ED19FBBAF98656C0D39FEAD65F0BA629B6BD08A5A6833C45C";
+  const uint8_t  P2P_UPGRADE_WINDOW = 2;
 } // namespace CryptoNote
 
 #define ALLOW_DEBUG_COMMANDS

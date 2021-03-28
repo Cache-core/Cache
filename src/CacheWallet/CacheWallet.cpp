@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 
     /* Our connection to cache-daemon */
     std::unique_ptr<CryptoNote::INode> node(
-        new CryptoNote::NodeRpcProxy(config.host, config.port, logger.getLogger()));
+        new CryptoNote::NodeRpcProxy(config.host, config.port));
 
     std::promise<std::error_code> errorPromise;
     std::future<std::error_code> error = errorPromise.get_future();
