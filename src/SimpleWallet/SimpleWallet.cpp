@@ -1428,7 +1428,7 @@ bool simple_wallet::optimize_outputs(const std::vector<std::string>& args) {
     std::vector<CryptoNote::WalletLegacyTransfer> transfers;
     std::vector<CryptoNote::TransactionMessage> messages;
     std::string extraString;
-    uint64_t fee = CryptoNote::parameters::MINIMUM_FEE;
+    uint64_t fee = CryptoNote::parameters::MINIMUM_FEE_V1;
     uint64_t mixIn = 0;
     uint64_t unlockTimestamp = 0;
     uint64_t ttl = 0;
@@ -1496,7 +1496,7 @@ bool simple_wallet::optimize_all_outputs(const std::vector<std::string>& args) {
       std::vector<CryptoNote::WalletLegacyTransfer> transfers;
       std::vector<CryptoNote::TransactionMessage> messages;
       std::string extraString;
-      uint64_t fee = CryptoNote::parameters::MINIMUM_FEE;
+      uint64_t fee = CryptoNote::parameters::MINIMUM_FEE_V2;
       uint64_t mixIn = 0;
       uint64_t unlockTimestamp = 0;
       uint64_t ttl = 0;
@@ -1846,8 +1846,8 @@ bool simple_wallet::transfer(const std::vector<std::string> &args) {
     cmd.fake_outs_count = CryptoNote::parameters::MINIMUM_MIXIN;
 
     /* force minimum fee */
-    if (cmd.fee < CryptoNote::parameters::MINIMUM_FEE) {
-      cmd.fee = CryptoNote::parameters::MINIMUM_FEE;
+    if (cmd.fee < CryptoNote::parameters::MINIMUM_FEE_V2) {
+      cmd.fee = CryptoNote::parameters::MINIMUM_FEE_V2;
     }
 
     Crypto::SecretKey transactionSK;
